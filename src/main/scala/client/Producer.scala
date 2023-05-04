@@ -28,7 +28,7 @@ object Producer extends App{
 
 
   val data = generateRandomData()
-  val record = new ProducerRecord[String, String](topic, "ekey","melis")
+  val record = new ProducerRecord[String, Map[String, String]](topic,data)
   producer.send(record)
     //Thread.sleep(60000) // sleep for 1 minute
 
