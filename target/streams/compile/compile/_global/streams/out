@@ -1,6 +1,2 @@
-[0m[[0m[31merror[0m] [0m[0m/Users/silaharmantepe/Documents/GitHub/DataEngineering/src/main/scala/client/Producer.scala:32:17: type mismatch;[0m
-[0m[[0m[31merror[0m] [0m[0m found   : org.apache.kafka.clients.producer.ProducerRecord[String,Map[String,String]][0m
-[0m[[0m[31merror[0m] [0m[0m required: org.apache.kafka.clients.producer.ProducerRecord[String,String][0m
-[0m[[0m[31merror[0m] [0m[0m  producer.send(record)[0m
-[0m[[0m[31merror[0m] [0m[0m                ^[0m
-[0m[[0m[31merror[0m] [0m[0mone error found[0m
+[0m[[0m[33mwarn[0m] [0m[0mthere was one deprecation warning; re-run with -deprecation for details[0m
+[0m[[0m[33mwarn[0m] [0m[0mone warning found[0m

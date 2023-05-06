@@ -1,7 +1,8 @@
 package  client
 
 import java.util.Properties
-import org.apache.kafka.clients.consumer.{ConsumerConfig, KafkaConsumer}
+import org.apache.kafka.clients.consumer.{ConsumerConfig, ConsumerRecords, KafkaConsumer}
+
 import scala.collection.JavaConverters._
 
 object Consumer extends App {
@@ -18,11 +19,21 @@ object Consumer extends App {
   consumer.subscribe(Seq(topic).asJava)
 
   while (true) {
-    val records = consumer.poll(1000).asScala
-    for (record <- records) {
-      println(s"Received message: ${record.value}")
+    //Timeout to not hang the application if there is no message
+    val records: ConsumerRecords[String, String] = consumer.poll(1000)
+    println("hey")
+    println(records)
+    /*
+    for (record <- records.asScala) {
+      println("foreach" + record)
+      println(record.value())
     }
-  }
+    */
 
+    records.asScala.foreach {
+      case record => println(record.value + (", "))
+    }
+
+  }
   consumer.close()
 }
