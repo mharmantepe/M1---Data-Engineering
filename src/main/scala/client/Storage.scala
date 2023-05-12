@@ -1,13 +1,15 @@
 package client
 
-import org.apache.spark.sql.functions._
 import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.functions._
+
 object Storage extends App {
+  // Create a Spark session
   val spark = SparkSession
     .builder
-    .appName("Spark-Storage")
+    .master("local[*]")
+    .appName("Storage")
     .getOrCreate()
-
 
   // Subscribe to 1 topic defaults to the earliest and latest offsets
   val df = spark
