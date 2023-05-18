@@ -2,8 +2,7 @@ package client
 
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.SparkSession
-import spark.implicits._
-
+/*
 object Alerts {
   def main(args: Array[String]): Unit = {
     val spark = SparkSession.builder()
@@ -46,3 +45,4 @@ object Alerts {
     println(message)
   }
 }
+*/

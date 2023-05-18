@@ -1,8 +1,10 @@
 package client
 
 import org.apache.spark.sql.SparkSession
+import org.apache.spark.SparkConf
+import org.apache.spark.SparkContext
 import org.apache.spark.sql.functions._
-
+/*
 object Storage extends App {
   // Create a Spark session
   val spark = SparkSession
@@ -21,3 +23,4 @@ object Storage extends App {
   df.selectExpr("CAST(key AS STRING)", "CAST(value AS STRING)")
     .as[(String, String)]
 }
+*/

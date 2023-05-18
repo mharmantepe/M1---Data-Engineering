@@ -1,22 +1,5 @@
-[0m[[0m[31merror[0m] [0m[0m/Users/silaharmantepe/Documents/GitHub/DataEngineering/src/main/scala/client/Alerts.scala:3:29: object functions is not a member of package org.apache.spark.sql[0m
-[0m[[0m[31merror[0m] [0m[0mimport org.apache.spark.sql.functions._[0m
-[0m[[0m[31merror[0m] [0m[0m                            ^[0m
-[0m[[0m[31merror[0m] [0m[0m/Users/silaharmantepe/Documents/GitHub/DataEngineering/src/main/scala/client/Alerts.scala:4:8: object SparkSession is not a member of package org.apache.spark.sql[0m
-[0m[[0m[31merror[0m] [0m[0mimport org.apache.spark.sql.SparkSession[0m
-[0m[[0m[31merror[0m] [0m[0m       ^[0m
-[0m[[0m[31merror[0m] [0m[0m/Users/silaharmantepe/Documents/GitHub/DataEngineering/src/main/scala/client/Alerts.scala:5:8: not found: object spark[0m
-[0m[[0m[31merror[0m] [0m[0mimport spark.implicits._[0m
-[0m[[0m[31merror[0m] [0m[0m       ^[0m
-[0m[[0m[31merror[0m] [0m[0m/Users/silaharmantepe/Documents/GitHub/DataEngineering/src/main/scala/client/Alerts.scala:9:17: not found: value SparkSession[0m
-[0m[[0m[31merror[0m] [0m[0m    val spark = SparkSession.builder()[0m
-[0m[[0m[31merror[0m] [0m[0m                ^[0m
-[0m[[0m[31merror[0m] [0m[0m/Users/silaharmantepe/Documents/GitHub/DataEngineering/src/main/scala/client/Storage.scala:3:8: object SparkSession is not a member of package org.apache.spark.sql[0m
-[0m[[0m[31merror[0m] [0m[0mimport org.apache.spark.sql.SparkSession[0m
-[0m[[0m[31merror[0m] [0m[0m       ^[0m
-[0m[[0m[31merror[0m] [0m[0m/Users/silaharmantepe/Documents/GitHub/DataEngineering/src/main/scala/client/Storage.scala:4:29: object functions is not a member of package org.apache.spark.sql[0m
-[0m[[0m[31merror[0m] [0m[0mimport org.apache.spark.sql.functions._[0m
-[0m[[0m[31merror[0m] [0m[0m                            ^[0m
-[0m[[0m[31merror[0m] [0m[0m/Users/silaharmantepe/Documents/GitHub/DataEngineering/src/main/scala/client/Storage.scala:8:15: not found: value SparkSession[0m
-[0m[[0m[31merror[0m] [0m[0m  val spark = SparkSession[0m
-[0m[[0m[31merror[0m] [0m[0m              ^[0m
-[0m[[0m[31merror[0m] [0m[0m7 errors found[0m
+[0m[[0m[33mwarn[0m] [0m[0m/Users/silaharmantepe/Documents/GitHub/DataEngineering/src/main/scala/client/Producer.scala:3:15: imported `Citizen' is permanently hidden by definition of object Citizen in package client[0m
+[0m[[0m[33mwarn[0m] [0m[0mimport client.Citizen[0m
+[0m[[0m[33mwarn[0m] [0m[0m              ^[0m
+[0m[[0m[33mwarn[0m] [0m[0mthere was one deprecation warning; re-run with -deprecation for details[0m
+[0m[[0m[33mwarn[0m] [0m[0mtwo warnings found[0m
