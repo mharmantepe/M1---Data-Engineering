@@ -14,7 +14,7 @@ object Producer extends App{
   props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer")
   props.put("value.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer")
 
-  val topic = "my-topic"
+  val topic = "reports"
 
   val producer = new KafkaProducer[String, Array[Byte]](props)
 

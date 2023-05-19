@@ -1,5 +1,0 @@
-[0m[[0m[33mwarn[0m] [0m[0m/Users/silaharmantepe/Documents/GitHub/DataEngineering/src/main/scala/client/Producer.scala:3:15: imported `Citizen' is permanently hidden by definition of object Citizen in package client[0m
-[0m[[0m[33mwarn[0m] [0m[0mimport client.Citizen[0m
-[0m[[0m[33mwarn[0m] [0m[0m              ^[0m
-[0m[[0m[33mwarn[0m] [0m[0mthere was one deprecation warning; re-run with -deprecation for details[0m
-[0m[[0m[33mwarn[0m] [0m[0mtwo warnings found[0m

@@ -2,7 +2,6 @@
   <library name="sbt: com.github.luben:zstd-jni:1.5.2-1:jar">
     <CLASSES>
       <root url="jar://$USER_HOME$/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/github/luben/zstd-jni/1.5.2-1/zstd-jni-1.5.2-1.jar!/" />
-      <root url="jar://$USER_HOME$/Downloads/jar_files/play-json_2.10-2.6.14.jar!/" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/github/luben/zstd-jni/1.5.2-1/zstd-jni-1.5.2-1-javadoc.jar!/" />

@@ -15,7 +15,7 @@ object Consumer extends App {
 
   val consumer = new KafkaConsumer[String, String](props)
 
-  val topic = "my-topic"
+  val topic = "reports"
 
   consumer.subscribe(Seq(topic).asJava)
   val writer = new PrintWriter(new File("output.csv"))
