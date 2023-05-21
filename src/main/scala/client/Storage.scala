@@ -15,6 +15,7 @@ object Storage extends App {
     .builder
     .master("local[*]")
     .appName("Storage")
+    .config("spark.streaming.stopGracefullyOnShutdown", "true")
     .getOrCreate()
 
   import spark.implicits._
@@ -32,29 +33,34 @@ object Storage extends App {
 
   initDf.printSchema()
 
-  // The schema (data structure) of a Report sent as JSON on Kafka
+  // The schema (data structure) of a Report (value of the Kafka message) sent as JSON on Kafka
   val reportSchema = new StructType()
-    .add("time", LongType)
-    .add("droneId", StringType)
+    .add("timestamp", LongType)
     .add("latitude", DoubleType)
-    .add("longitude", DoubleType)
+    .add("droneId", StringType)
     .add("citizens", new ArrayType(
       new StructType()
         .add("name", StringType)
         .add("peaceScore", IntegerType),
       false
     ))
+    .add("longitude", DoubleType)
     .add("words", new ArrayType(StringType, false))
 
 
 
-  // We parse the JSON string in the "value" column for the topic "reports"
-  val parsedDf = initDf.selectExpr("cast(value as string) as value")
-    .select(from_json($"value", reportSchema).as("data"))
+
+  //Since the value is in binary, first we need to convert the binary value to String using selectExpr()
+  //Then extract the value which is in JSON String to DataFrame and convert to DataFrame columns using custom schema.
+  val parsedDf = initDf.selectExpr("CAST(value AS STRING) as value")
+    .select(from_json($"value", reportSchema).as("report"))
+    .select("report.*")
+  parsedDf.printSchema()
   /*
   val parsedDf = initDf.select(from_json(col("value"), reportSchema).as("data"))
     .select("data.*")*/
   /*
+   // We parse the JSON string in the "value" column for the topic "reports"
   val reports = df.filter($"topic" === "reports")
     .select(from_json($"value".cast(StringType), reportSchema).as("report"))
     .select($"report.*")
@@ -64,13 +70,17 @@ object Storage extends App {
   // For better scalability, this should be replaced with a distributed data lake (ex. HDFS/S3)
   // We use a processing time trigger of 10s to reduce the number of small files
   val finalDF = parsedDf.writeStream
-    .format("json")
-    .option("path", "/Users/silaharmantepe/Documents/GitHub/DataEngineering/src/resources/localStorage/dataFiles")
-    .option("checkpointLocation", "/Users/silaharmantepe/Documents/GitHub/DataEngineering/src/resources/localStorage/checkPoints")
-    .outputMode(OutputMode.Append())
+    .format("console")
+    //.option("path", "/Users/silaharmantepe/Documents/GitHub/DataEngineering/src/resources/localStorage/dataFiles")
+    //.option("checkpointLocation", "/Users/silaharmantepe/Documents/GitHub/DataEngineering/src/resources/localStorage/checkPoints")
+    .outputMode("append")
     .trigger(Trigger.ProcessingTime(10000))
     .start()
-    .awaitTermination()
+
+  finalDF.awaitTermination()
+
+
+
   spark.close()
 
 

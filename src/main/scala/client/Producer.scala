@@ -42,11 +42,29 @@ object Producer extends App{
     // Choose a number of words to include in the report between 2 and 10
     val randomNbWords = 2 + Random.nextInt(9)
     // Generate the list of words by selecting them at random
-    val rand_words = List.fill(randomNbWords)(words(Random.nextInt(words.length)))
+    val randWords = List.fill(randomNbWords)(words(Random.nextInt(words.length)))
 
-    Json.toJson(Map("drone_id" -> droneId.toString, "longitude" -> longitude.toString, "latitude" -> latitude.toString,
-      "timestamp" -> timestamp.toString, "citizens" -> citizens.toString, "words" -> rand_words.mkString(",")))
+
+    // Create a JsObject with the columns in the desired order
+    val json = Json.obj(
+      "timestamp" -> timestamp.toString,
+      "droneId" -> droneId.toString,
+      "latitude" -> latitude.toString,
+      "longitude" -> longitude.toString,
+      "citizens" -> citizens.toString,
+      "words" -> randWords.mkString(",")
+    )
+
+    // Convert the JsObject to a JSON string
+    //val jsonString = Json.stringify(json)
+    json
+    /*
+    //By nature, json objects are unordered. This creates a problem in the Spark stream when reading the columns.
+    Json.toJson(Map("droneId" -> droneId.toString, "longitude" -> longitude.toString, "latitude" -> latitude.toString,
+      "timestamp" -> timestamp.toString, "citizens" -> citizens.toString, "words" -> randWords.mkString(",")))
+    */
   }
+
 
   while (true) {
     val data = generateReport()

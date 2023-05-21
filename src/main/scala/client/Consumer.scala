@@ -5,6 +5,7 @@ import java.util.Properties
 import org.apache.kafka.clients.consumer.{ConsumerConfig, ConsumerRecords, KafkaConsumer}
 import scala.util.matching.Regex
 import scala.collection.JavaConverters._
+import play.api.libs.json._
 
 object Consumer extends App {
   val props = new Properties()
@@ -35,13 +36,24 @@ object Consumer extends App {
       case record =>
         println(record)
         println(record.value)
-        //val pattern: Regex = "(?<=\\().*?(?=\\))".r
-        //val matches = pattern.findAllIn(record.value)
-        //println(matches)
-        //val values = record.value.split(",").toList
-        //matches.foreach(println)
-        //val attributes = record.value.split(",")
-        val csvLine = s"${record.timestamp()},${record.key()},${record.value()}"
+
+        // Parse the JSON string back into a JsValue
+        val json = Json.parse(record.value)
+        // Access the fields based on their names
+        val timestamp = (json \ "timestamp").as[String]
+        val droneId = (json \ "droneId").as[String]
+        val latitude = (json \ "latitude").as[Double]
+        val longitude = (json \ "longitude").as[Double]
+        val citizens = (json \ "citizens").as[String]
+        val words = (json \ "words").as[String]
+
+        val csvLine = s"${record.timestamp()},${record.key()}," +
+          s"${timestamp}," +
+          s"${droneId}" +
+          s"${latitude}" +
+          s"${longitude}" +
+          s"${citizens}" +
+          s"${words}"
         writer.write(csvLine + "\n")
     }
     writer.flush()
