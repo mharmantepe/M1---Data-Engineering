@@ -44,25 +44,21 @@ object Producer extends App{
     // Generate the list of words by selecting them at random
     val randWords = List.fill(randomNbWords)(words(Random.nextInt(words.length)))
 
-
+/*
     // Create a JsObject with the columns in the desired order
     val json = Json.obj(
       "timestamp" -> timestamp.toString,
-      "droneId" -> droneId.toString,
       "latitude" -> latitude.toString,
-      "longitude" -> longitude.toString,
+      "droneId" -> droneId.toString,
       "citizens" -> citizens.toString,
+      "longitude" -> longitude.toString,
       "words" -> randWords.mkString(",")
     )
+    json*/
 
-    // Convert the JsObject to a JSON string
-    //val jsonString = Json.stringify(json)
-    json
-    /*
-    //By nature, json objects are unordered. This creates a problem in the Spark stream when reading the columns.
     Json.toJson(Map("droneId" -> droneId.toString, "longitude" -> longitude.toString, "latitude" -> latitude.toString,
       "timestamp" -> timestamp.toString, "citizens" -> citizens.toString, "words" -> randWords.mkString(",")))
-    */
+
   }
 
 

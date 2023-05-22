@@ -41,6 +41,7 @@ object Storage extends App {
     .add("citizens", new ArrayType(
       new StructType()
         .add("name", StringType)
+        .add("surname", StringType)
         .add("peaceScore", IntegerType),
       false
     ))

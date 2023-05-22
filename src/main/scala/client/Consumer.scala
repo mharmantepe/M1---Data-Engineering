@@ -3,9 +3,7 @@ package client
 import java.io._
 import java.util.Properties
 import org.apache.kafka.clients.consumer.{ConsumerConfig, ConsumerRecords, KafkaConsumer}
-import scala.util.matching.Regex
 import scala.collection.JavaConverters._
-import play.api.libs.json._
 
 object Consumer extends App {
   val props = new Properties()
@@ -24,36 +22,13 @@ object Consumer extends App {
   while (true) {
     //Timeout to not hang the application if there is no message
     val records: ConsumerRecords[String, String] = consumer.poll(1000)
-    //println(records)
-    /*
-    for (record <- records.asScala) {
-      println("foreach" + record)
-      println(record.value())
-    }
-    */
 
     records.asScala.foreach {
       case record =>
         println(record)
         println(record.value)
 
-        // Parse the JSON string back into a JsValue
-        val json = Json.parse(record.value)
-        // Access the fields based on their names
-        val timestamp = (json \ "timestamp").as[String]
-        val droneId = (json \ "droneId").as[String]
-        val latitude = (json \ "latitude").as[Double]
-        val longitude = (json \ "longitude").as[Double]
-        val citizens = (json \ "citizens").as[String]
-        val words = (json \ "words").as[String]
-
-        val csvLine = s"${record.timestamp()},${record.key()}," +
-          s"${timestamp}," +
-          s"${droneId}" +
-          s"${latitude}" +
-          s"${longitude}" +
-          s"${citizens}" +
-          s"${words}"
+        val csvLine = s"${record.timestamp()},${record.key()},${record.value()}"
         writer.write(csvLine + "\n")
     }
     writer.flush()
