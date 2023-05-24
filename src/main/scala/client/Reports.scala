@@ -5,13 +5,13 @@ import play.api.libs.json.{JsValue, Json}
 import java.util.Date
 import scala.util.Random
 
-case class Report(droneId: String, longitude: Double, latitude: Double, timestamp: Date, citizens : List[Citizen] , words: List[String])
+case class Report(droneId: String, longitude: Double, latitude: Double, timestamp: String, citizens : List[Citizen] , words: List[String])
 object Reports {
-  def generateReport(): JsValue = {
+  def generateReport(): Report = {
     val droneId = 1 + Random.nextInt(5)
     val longitude = Random.nextDouble() * 360 - 180
     val latitude = Random.nextDouble() * 180 - 90
-    val timestamp = new Date()
+    val timestamp = new Date().toString
 
     // Generate a random count between 1 and 10
     val randomNbCitizen = Random.nextInt(10) + 1
@@ -33,9 +33,11 @@ object Reports {
           "words" -> randWords.mkString(",")
         )
         json*/
-
+/*
     Json.toJson(Map("droneId" -> droneId.toString, "longitude" -> longitude.toString, "latitude" -> latitude.toString,
       "timestamp" -> timestamp.toString, "citizens" -> citizens.toString, "words" -> randWords.mkString(",")))
+*/
+    Report(droneId.toString, longitude, latitude, timestamp, citizens, randWords)
 
   }
 }

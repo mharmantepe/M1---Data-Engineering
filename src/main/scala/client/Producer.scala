@@ -38,27 +38,43 @@ object Producer extends App{
     // Generate a random count between 1 and 10
     val randomNbCitizen = Random.nextInt(10) + 1
     val citizens = List.fill(randomNbCitizen)(client.Citizen.generateCitizen())
+    println(citizens)
 
     // Choose a number of words to include in the report between 2 and 10
     val randomNbWords = 2 + Random.nextInt(9)
     // Generate the list of words by selecting them at random
     val randWords = List.fill(randomNbWords)(words(Random.nextInt(words.length)))
+    println(randWords)
 
-/*
     // Create a JsObject with the columns in the desired order
     val json = Json.obj(
       "timestamp" -> timestamp.toString,
-      "latitude" -> latitude.toString,
-      "droneId" -> droneId.toString,
-      "citizens" -> citizens.toString,
-      "longitude" -> longitude.toString,
-      "words" -> randWords.mkString(",")
+      "droneId" -> droneId,
+      "latitude" -> latitude,
+      "longitude" -> longitude,
+      "citizens" -> Json.toJson(citizens.map { citizen =>
+        Json.obj(
+          "name" -> citizen.name,
+          "surname" -> citizen.surname,
+          "score" -> citizen.score
+        )
+      }),
+      "citizenName" -> Json.toJson(citizens.map(_.name)),
+      "citizenSurname" -> citizens.map(_.surname),
+      "citizenScore" -> citizens.map(_.score).toList,
+      "words" -> Json.toJson(randWords.mkString(","))
     )
-    json*/
-
+    //val x = Json.toJson(citizens.map(_.name))
+    //val y= Json.toJson(randWords.mkString(","))
+    // Convert the JsObject to a JSON string
+    //val jsonString = Json.stringify(json)
+    json
+    /*
+    val citscore= citizens.map(_.score)
+    //By nature, json objects are unordered. This creates a problem in the Spark stream when reading the columns.
     Json.toJson(Map("droneId" -> droneId.toString, "longitude" -> longitude.toString, "latitude" -> latitude.toString,
-      "timestamp" -> timestamp.toString, "citizens" -> citizens.toString, "words" -> randWords.mkString(",")))
-
+      "timestamp" -> timestamp.toString, "citizens" -> citscore, "words" -> randWords.mkString(",")))
+    */
   }
 
 

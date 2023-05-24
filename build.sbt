@@ -15,6 +15,5 @@ lazy val root = (project in file("."))
     libraryDependencies += "com.typesafe.play" %% "play-json" % "2.6.14",
     libraryDependencies += "org.apache.hadoop" % "hadoop-common" % "3.2.4",
     libraryDependencies += "org.apache.hadoop" % "hadoop-hdfs" % "3.2.4"
-)
+  )
 
-//libraryDependencies += "org.apache.spark" %% "spark-sql-kafka-0-10" % "3.2.1",

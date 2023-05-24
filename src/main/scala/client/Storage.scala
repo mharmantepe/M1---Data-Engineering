@@ -32,21 +32,25 @@ object Storage extends App {
     .load()
 
   initDf.printSchema()
-
+  println(initDf)
   // The schema (data structure) of a Report (value of the Kafka message) sent as JSON on Kafka
   val reportSchema = new StructType()
-    .add("timestamp", LongType)
+    .add("timestamp", StringType)
+    .add("droneId", IntegerType)
     .add("latitude", DoubleType)
-    .add("droneId", StringType)
+    .add("longitude", DoubleType)
+
     .add("citizens", new ArrayType(
       new StructType()
-        .add("name", StringType)
-        .add("surname", StringType)
-        .add("peaceScore", IntegerType),
+        .add("citizenName", StringType)
+        .add("citizenSurname", StringType)
+        .add("citizenScore", IntegerType),
       false
     ))
-    .add("longitude", DoubleType)
-    .add("words", new ArrayType(StringType, false))
+    .add("citizenName", StringType)
+    .add("citizenSurname", StringType)
+    .add("citizenScore", StringType)
+    .add("words", new ArrayType(StringType, true))
 
 
 
@@ -57,6 +61,8 @@ object Storage extends App {
     .select(from_json($"value", reportSchema).as("report"))
     .select("report.*")
   parsedDf.printSchema()
+
+  println(parsedDf)
   /*
   val parsedDf = initDf.select(from_json(col("value"), reportSchema).as("data"))
     .select("data.*")*/
