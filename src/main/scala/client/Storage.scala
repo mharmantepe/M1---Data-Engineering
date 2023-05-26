@@ -39,20 +39,12 @@ object Storage extends App {
     .add("droneId", IntegerType)
     .add("latitude", DoubleType)
     .add("longitude", DoubleType)
-
-    .add("citizens", new ArrayType(
-      new StructType()
-        .add("citizenName", StringType)
-        .add("citizenSurname", StringType)
-        .add("citizenScore", IntegerType),
-      false
-    ))
-    .add("citizenName", StringType)
-    .add("citizenSurname", StringType)
-    .add("citizenScore", StringType)
-    .add("words", new ArrayType(StringType, true))
-
-
+    .add("citizens", ArrayType(new StructType()
+      .add("name", StringType)
+      .add("surname", StringType)
+      .add("score", IntegerType)
+      .add("words", StringType)))
+  println(reportSchema)
 
 
   //Since the value is in binary, first we need to convert the binary value to String using selectExpr()
@@ -60,12 +52,18 @@ object Storage extends App {
   val parsedDf = initDf.selectExpr("CAST(value AS STRING) as value")
     .select(from_json($"value", reportSchema).as("report"))
     .select("report.*")
-  parsedDf.printSchema()
 
+  parsedDf.printSchema()
   println(parsedDf)
   /*
+  val parsedDf = initDf.withColumn("jsonData", from_json(col("value").cast(StringType), reportSchema))
+  println(parsedDf)*/
+  /*
   val parsedDf = initDf.select(from_json(col("value"), reportSchema).as("data"))
-    .select("data.*")*/
+    .select("data.*")
+  println(parsedDf)
+
+   */
   /*
    // We parse the JSON string in the "value" column for the topic "reports"
   val reports = df.filter($"topic" === "reports")
@@ -77,18 +75,13 @@ object Storage extends App {
   // For better scalability, this should be replaced with a distributed data lake (ex. HDFS/S3)
   // We use a processing time trigger of 10s to reduce the number of small files
   val finalDF = parsedDf.writeStream
-    .format("console")
-    //.option("path", "/Users/silaharmantepe/Documents/GitHub/DataEngineering/src/resources/localStorage/dataFiles")
-    //.option("checkpointLocation", "/Users/silaharmantepe/Documents/GitHub/DataEngineering/src/resources/localStorage/checkPoints")
+    .format("json")
+    .option("path", "/Users/silaharmantepe/Documents/GitHub/DataEngineering/src/resources/localStorage/dataFiles")
+    .option("checkpointLocation", "/Users/silaharmantepe/Documents/GitHub/DataEngineering/src/resources/localStorage/checkPoints")
     .outputMode("append")
     .trigger(Trigger.ProcessingTime(10000))
     .start()
 
   finalDF.awaitTermination()
-
-
-
   spark.close()
-
-
 }

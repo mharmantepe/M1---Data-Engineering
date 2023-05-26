@@ -12,11 +12,11 @@ object Producer extends App{
   val props = new Properties()
   props.put("bootstrap.servers", "localhost:9092")
   props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer")
-  props.put("value.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer")
+  props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer")
 
   val topic = "reports"
 
-  val producer = new KafkaProducer[String, Array[Byte]](props)
+  val producer = new KafkaProducer[String, String](props)
 
   val words = List("hello", "depressed", "good", "happy", "tired", "sad", "exhausted", "joyous", "dancing", "crying")
 
@@ -56,21 +56,17 @@ object Producer extends App{
         Json.obj(
           "name" -> citizen.name,
           "surname" -> citizen.surname,
-          "score" -> citizen.score
+          "score" -> citizen.score,
+          "words" -> Json.toJson(randWords.mkString(","))
         )
       }),
-      "citizenName" -> Json.toJson(citizens.map(_.name)),
-      "citizenSurname" -> citizens.map(_.surname),
-      "citizenScore" -> citizens.map(_.score).toList,
-      "words" -> Json.toJson(randWords.mkString(","))
+      //"citizenName" -> Json.toJson(citizens.map(_.name)),
+      //"citizenSurname" -> citizens.map(_.surname),
+      //"citizenScore" -> citizens.map(_.score).toList,
+
     )
-    //val x = Json.toJson(citizens.map(_.name))
-    //val y= Json.toJson(randWords.mkString(","))
-    // Convert the JsObject to a JSON string
-    //val jsonString = Json.stringify(json)
     json
     /*
-    val citscore= citizens.map(_.score)
     //By nature, json objects are unordered. This creates a problem in the Spark stream when reading the columns.
     Json.toJson(Map("droneId" -> droneId.toString, "longitude" -> longitude.toString, "latitude" -> latitude.toString,
       "timestamp" -> timestamp.toString, "citizens" -> citscore, "words" -> randWords.mkString(",")))
@@ -80,7 +76,8 @@ object Producer extends App{
 
   while (true) {
     val data = generateReport()
-    val report = new ProducerRecord[String, Array[Byte]](topic, Json.toBytes(data))
+    println(data)
+    val report = new ProducerRecord[String, String](topic, data.toString)
     producer.send(report)
     Thread.sleep(60000) // sleep for 1 minute
   }

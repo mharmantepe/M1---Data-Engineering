@@ -29,7 +29,7 @@ object Consumer extends App {
       case record =>
         println(record)
         println(record.value)
-        val jsonStr = new String(record.value())
+        val jsonStr = record.value()
         println(jsonStr)
         // Parse the JSON string back into a JsValue
         val json = Json.parse(jsonStr)

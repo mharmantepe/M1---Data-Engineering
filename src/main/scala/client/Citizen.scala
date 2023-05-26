@@ -12,9 +12,9 @@ object Citizen {
     val randName = names(Random.nextInt(names.length))
     val randSurname = surnames(Random.nextInt(surnames.length))
     //val person = s"${randName} ${randSurname}"
-    val peacescore = Random.nextInt(10)
+    val peaceScore = Random.nextInt(10)
 
-    Citizen(randName,randSurname,peacescore)
+    Citizen(randName,randSurname,peaceScore)
   }
 
 }
