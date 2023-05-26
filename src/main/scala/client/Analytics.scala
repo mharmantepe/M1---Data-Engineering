@@ -3,11 +3,12 @@ import org.apache.spark.sql.types.{ArrayType, DoubleType, IntegerType, StringTyp
 import org.apache.spark.sql.functions._
 
 object Analytics extends App {
+
   // Create a Spark session
   val spark = SparkSession
     .builder()
     .master("local[*]")
-    .appName("Storage")
+    .appName("Analytics")
     .config("spark.streaming.stopGracefullyOnShutdown", "true")
     .getOrCreate()
 
@@ -24,22 +25,37 @@ object Analytics extends App {
       .add("score", IntegerType)
       .add("words", StringType)))
 
-  val df = spark.readStream
+  //Read reports data from the local storage
+  val df = spark.read
     .schema(reportSchema)
     .json("/Users/silaharmantepe/Documents/GitHub/DataEngineering/src/resources/localStorage/dataFiles")
 
   df.printSchema()
+  println(df)
+  df.show()
+  //Explode the citizen field in order to access its subfields : name, surname, words
+  val explodedCitizensDF = df.select(explode(col("citizens")).as("citizen"))
+  (explodedCitizensDF.select(col("citizen"))).show()
 
-  val explodedDF = df.select(explode(col("citizens")).as("citizen"))
-  val df2 = explodedDF.select("citizen.name")
+  //10 most peaceful citizens (mean of score)
+  println("10 most peaceful citizens")
+  val peacefulCitizens = explodedCitizensDF.select(col("citizen.name").as("name"),
+    col("citizen.surname").as("surname"), col("citizen.score").as("score"))
+    .groupBy("name", "surname")
+    .agg(avg("score").as("avgPeaceScore"))
+    .orderBy(col("avgPeaceScore").desc)
+    .limit(10)
+  peacefulCitizens.show()
 
-  df2.printSchema()
+  //Top 10 most heard words
+  val mostHeardWords = explodedCitizensDF.select(col("citizen.words").as("words"))
+    .groupBy(col("words"))
+    .count()
+  mostHeardWords.show()
 
-  explodedDF.writeStream
-    .format("console")
-    .outputMode("append")
-    .start()
-    .awaitTermination()
+  //Citizens who have never created a riot (never had a score < 5)
+  //The list of citizens with most alerts
+  //The distribution of alerts depending on the day of the week
 
   spark.close()
 }

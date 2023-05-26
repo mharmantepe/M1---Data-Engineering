@@ -1,8 +1,6 @@
 package client
 
 import org.apache.spark.sql.SparkSession
-import org.apache.spark.SparkConf
-import org.apache.spark.SparkContext
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.streaming.Trigger
@@ -28,13 +26,14 @@ object Storage extends App {
     .format("kafka")
     .option("kafka.bootstrap.servers", "localhost:9092")
     .option("group.id", "storage")
-    .option("subscribe", "reports") //topics to subscribe to add "alerts" next to "reports" lateron
+    .option("subscribe", "reports, alerts") //topics to subscribe to add "alerts" next to "reports" lateron
     .load()
 
   initDf.printSchema()
   println(initDf)
+
   // The schema (data structure) of a Report (value of the Kafka message) sent as JSON on Kafka
-  val reportSchema = new StructType()
+  val schema = new StructType()
     .add("timestamp", StringType)
     .add("droneId", IntegerType)
     .add("latitude", DoubleType)
@@ -44,44 +43,48 @@ object Storage extends App {
       .add("surname", StringType)
       .add("score", IntegerType)
       .add("words", StringType)))
-  println(reportSchema)
+  println(schema)
 
 
-  //Since the value is in binary, first we need to convert the binary value to String using selectExpr()
+  //First we filter the topic field of the initial dataframe to only get the reports
+  //Since the value is in binary, we need to convert the binary value to String using selectExpr()
   //Then extract the value which is in JSON String to DataFrame and convert to DataFrame columns using custom schema.
-  val parsedDf = initDf.selectExpr("CAST(value AS STRING) as value")
-    .select(from_json($"value", reportSchema).as("report"))
+  val parsedDfReports = initDf.filter($"topic" === "reports")
+    .selectExpr("CAST(value AS STRING) as value")
+    .select(from_json($"value", schema).as("report"))
     .select("report.*")
+  parsedDfReports.printSchema()
+  println(parsedDfReports)
 
-  parsedDf.printSchema()
-  println(parsedDf)
-  /*
-  val parsedDf = initDf.withColumn("jsonData", from_json(col("value").cast(StringType), reportSchema))
-  println(parsedDf)*/
-  /*
-  val parsedDf = initDf.select(from_json(col("value"), reportSchema).as("data"))
-    .select("data.*")
-  println(parsedDf)
+  //Filter the topic this time on the alerts and apply the data schema
+  val parsedDfAlerts = initDf.filter($"topic" === "alerts")
+    .selectExpr("CAST(value AS STRING) as value")
+    .select(from_json($"value", schema).as("alert"))
+    .select("alert.*")
+  parsedDfAlerts.printSchema()
+  println(parsedDfAlerts)
 
-   */
-  /*
-   // We parse the JSON string in the "value" column for the topic "reports"
-  val reports = df.filter($"topic" === "reports")
-    .select(from_json($"value".cast(StringType), reportSchema).as("report"))
-    .select($"report.*")
-   */
 
-  // We write the Reports as JSON in local files
-  // For better scalability, this should be replaced with a distributed data lake (ex. HDFS/S3)
-  // We use a processing time trigger of 10s to reduce the number of small files
-  val finalDF = parsedDf.writeStream
+  //Write the Reports as JSON in local files /reports
+  //Use a processing time trigger of 10s to reduce the number of small files
+  val finalDFReports = parsedDfReports.writeStream
     .format("json")
-    .option("path", "/Users/silaharmantepe/Documents/GitHub/DataEngineering/src/resources/localStorage/dataFiles")
+    .option("path", "/Users/silaharmantepe/Documents/GitHub/DataEngineering/src/resources/localStorage/dataFiles/reports")
     .option("checkpointLocation", "/Users/silaharmantepe/Documents/GitHub/DataEngineering/src/resources/localStorage/checkPoints")
     .outputMode("append")
     .trigger(Trigger.ProcessingTime(10000))
     .start()
 
-  finalDF.awaitTermination()
+  //Write the Alerts as JSON in local files /alerts
+  val finalDFAlerts = parsedDfAlerts.writeStream
+    .format("json")
+    .option("path", "/Users/silaharmantepe/Documents/GitHub/DataEngineering/src/resources/localStorage/dataFiles/alerts")
+    .option("checkpointLocation", "/Users/silaharmantepe/Documents/GitHub/DataEngineering/src/resources/localStorage/checkPoints")
+    .outputMode("append")
+    .trigger(Trigger.ProcessingTime(10000))
+    .start()
+
+  finalDFReports.awaitTermination()
+  finalDFAlerts.awaitTermination()
   spark.close()
 }

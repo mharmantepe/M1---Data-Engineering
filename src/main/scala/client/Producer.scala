@@ -77,7 +77,7 @@ object Producer extends App{
   while (true) {
     val data = generateReport()
     println(data)
-    val report = new ProducerRecord[String, String](topic, data.toString)
+    val report = new ProducerRecord[String, String](topic, data.droneId, data.toString)
     producer.send(report)
     Thread.sleep(60000) // sleep for 1 minute
   }
