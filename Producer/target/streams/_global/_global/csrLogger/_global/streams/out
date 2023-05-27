@@ -1,0 +1,5 @@
+[debug] downloaded https://repo1.maven.org/maven2/org/apache/spark/spark-streaming_2.13/3.2.1/spark-streaming_2.13-3.2.1.pom
+[debug] downloaded https://repo1.maven.org/maven2/org/apache/spark/spark-sql-kafka-0-10_2.13/3.1.2/spark-sql-kafka-0-10_2.13-3.1.2.pom
+[debug] downloaded https://repo1.maven.org/maven2/com/typesafe/play/play-json_2.13/2.6.14/play-json_2.13-2.6.14.pom
+[debug] downloaded https://repo1.maven.org/maven2/org/apache/spark/spark-sql-kafka-0-10_2.13/3.1.2/spark-sql-kafka-0-10_2.13-3.1.2.pom.sha1
+[debug] downloaded https://repo1.maven.org/maven2/com/typesafe/play/play-json_2.13/2.6.14/play-json_2.13-2.6.14.pom.sha1

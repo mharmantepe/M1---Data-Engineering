@@ -13,6 +13,46 @@
         </option>
         <option name="sbtVersion" value="1.8.2" />
       </SbtProjectSettings>
+      <SbtProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/AlertsConsumer" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/AlertsConsumer" />
+            <option value="$PROJECT_DIR$/AlertsConsumer/project" />
+          </set>
+        </option>
+        <option name="sbtVersion" value="1.8.3" />
+      </SbtProjectSettings>
+      <SbtProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/Analytics" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/Analytics" />
+            <option value="$PROJECT_DIR$/Analytics/project" />
+          </set>
+        </option>
+        <option name="sbtVersion" value="1.8.3" />
+      </SbtProjectSettings>
+      <SbtProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/Producer" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/Producer" />
+            <option value="$PROJECT_DIR$/Producer/project" />
+          </set>
+        </option>
+        <option name="sbtVersion" value="1.8.3" />
+      </SbtProjectSettings>
+      <SbtProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/Storage" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/Storage" />
+            <option value="$PROJECT_DIR$/Storage/project" />
+          </set>
+        </option>
+        <option name="sbtVersion" value="1.8.3" />
+      </SbtProjectSettings>
     </option>
   </component>
 </project>

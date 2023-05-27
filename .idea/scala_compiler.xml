@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ScalaCompilerConfiguration">
-    <profile name="sbt 1" modules="dataengineering_5336,test" />
+    <profile name="sbt 1" modules="AlertsConsumer,Analytics,Producer,Storage,dataengineering_5336,test" />
   </component>
 </project>

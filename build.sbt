@@ -2,6 +2,11 @@ ThisBuild / version := "0.1.0-SNAPSHOT"
 
 ThisBuild / scalaVersion := "2.12.8"
 
+lazy val subproject1 = project.in(file("Producer"))
+lazy val subproject2 = project.in(file("AlertsConsumer"))
+lazy val subproject3 = project.in(file("Storage"))
+lazy val subproject4 = project.in(file("Analytics"))
+
 lazy val root = (project in file("."))
   .settings(
     name := "test",
@@ -16,4 +21,5 @@ lazy val root = (project in file("."))
     libraryDependencies += "org.apache.hadoop" % "hadoop-common" % "3.2.4",
     libraryDependencies += "org.apache.hadoop" % "hadoop-hdfs" % "3.2.4"
   )
+  .aggregate(subproject1, subproject2, subproject3, subproject4)
 
