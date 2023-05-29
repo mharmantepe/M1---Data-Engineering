@@ -34,7 +34,7 @@ object Analytics extends App {
   println(dfReports)
   dfReports.show()
 
-  //Explode the citizen field in order to access its subfields : name, surname, words
+  //Explode the citizen field in order to access its subfields : name, surname, score
   val explodedCitizensDF = dfReports.select(explode(col("citizens")).as("citizen"))
   (explodedCitizensDF.select(col("citizen"))).show()
 
@@ -49,19 +49,28 @@ object Analytics extends App {
   peacefulCitizens.show()
 
   //Top 10 most heard words
-  val mostHeardWords = explodedCitizensDF.select(col("citizen.words").as("words"))
+  val explodedWordsDF = explodedCitizensDF.select(split(col("citizen.words"), ",").as("wordsExp"))
+  val mostHeardWords = explodedWordsDF.select(explode(col("wordsExp")).as("words"))
     .groupBy(col("words"))
     .count()
+    .orderBy(col("count").desc)
+    .limit(10)
   mostHeardWords.show()
 
   //The list of citizens with most alerts
-  val citizensWithMostAlerts = explodedCitizensDF.select(col("name"), col("surname"))
+  println("The list of citizens with most alerts")
+  val citizensWithMostAlerts = explodedCitizensDF.select(col("citizen.name"), col("citizen.surname"), col("citizen.score"))
+    .filter(col("citizen.score") < 5)
     .groupBy("name", "surname")
-    .count().as("alertsCount")
-    .orderBy(col("alertsCount").desc)
+    .count()
+    .orderBy(col("count").desc)
   citizensWithMostAlerts.show()
 
-  //The distribution of alerts depending on the day of the week
   //Citizens who have never created a riot (never had a score < 5)
+  println("Citizens who have never created a riot")
+  val citizensNeverRiot = explodedCitizensDF.select(col("citizen.name"), col("citizen.surname"), col("citizen.score"))
+    .filter(col("citizen.score") >= 5)
+  citizensNeverRiot.show()
+
   spark.close()
 }

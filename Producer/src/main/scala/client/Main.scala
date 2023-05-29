@@ -54,11 +54,7 @@ object Main extends App {
       }),
     )
     json
-    /*
-    //By nature, json objects are unordered. This creates a problem in the Spark stream when reading the columns.
-    Json.toJson(Map("droneId" -> droneId.toString, "longitude" -> longitude.toString, "latitude" -> latitude.toString,
-      "timestamp" -> timestamp.toString, "citizens" -> citscore, "words" -> randWords.mkString(",")))
-    */
+
   }
 
 

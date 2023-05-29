@@ -19,14 +19,13 @@ object Storage extends App {
   import spark.implicits._
 
   // Connect to Kafka as continuous stream on both topics "reports" and "alerts"
-  // We use a group.id so that if we start several instances (scale up), messages are not treated twice
   //Create an initial DataFrame from the Kafka data source using Spark's read API. This df reads each line from Kafka.
   val initDf = spark
     .readStream
     .format("kafka")
     .option("kafka.bootstrap.servers", "localhost:9092")
     .option("group.id", "storage")
-    .option("subscribe", "reports, alerts") //topics to subscribe to add "alerts" next to "reports" lateron
+    .option("subscribe", "reports, alerts") //Topics to subscribe to.
     .load()
 
   initDf.printSchema()
@@ -56,16 +55,8 @@ object Storage extends App {
   parsedDfReports.printSchema()
   println(parsedDfReports)
 
-  //Filter the topic this time on the alerts and apply the data schema
-  val parsedDfAlerts = initDf.filter($"topic" === "alerts")
-    .selectExpr("CAST(value AS STRING) as value")
-    .select(from_json($"value", schema).as("alert"))
-    .select("alert.*")
-  parsedDfAlerts.printSchema()
-  println(parsedDfAlerts)
 
-
-  //Write the Reports as JSON in local files /reports
+  //Write the Reports as JSON in local files
   //Use a processing time trigger of 10s to reduce the number of small files
   val finalDFReports = parsedDfReports.writeStream
     .format("json")
@@ -75,6 +66,13 @@ object Storage extends App {
     .trigger(Trigger.ProcessingTime(10000))
     .start()
 /*
+  //Filter the topic this time on the alerts and apply the data schema
+  val parsedDfAlerts = initDf.filter($"topic" === "alerts")
+    .selectExpr("CAST(value AS STRING) as value")
+    .select(from_json($"value", schema).as("alert"))
+    .select("alert.*")
+  parsedDfAlerts.printSchema()
+  println(parsedDfAlerts)
   //Write the Alerts as JSON in local files /alerts
   val finalDFAlerts = parsedDfAlerts.writeStream
     .format("json")
@@ -83,8 +81,10 @@ object Storage extends App {
     .outputMode("append")
     .trigger(Trigger.ProcessingTime(10000))
     .start()
+
+    //finalDFAlerts.awaitTermination()
 */
+
   finalDFReports.awaitTermination()
-  //finalDFAlerts.awaitTermination()
   spark.close()
 }

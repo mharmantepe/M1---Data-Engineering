@@ -23,7 +23,6 @@ object Alerts extends App {
   consumer.subscribe(Seq(topic).asJava)
 
   while (true) {
-    //Timeout to not hang the application if there is no message
     //Attention! the k,v types of the consumer record must respectively be the same as in the class configurations
     //of the serializer and deserializers.
     val reports : ConsumerRecords[String, String] = consumer.poll(1000)
