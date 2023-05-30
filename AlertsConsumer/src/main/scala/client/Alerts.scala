@@ -22,6 +22,23 @@ object Alerts extends App {
   //for subscribing the consumer to a single topic. I then convert it into a Java list using the .asJava method.
   consumer.subscribe(Seq(topic).asJava)
 
+  def findAgitatedCitizens(json: JsValue): List[String] = {
+    //Citizens field of the report is a List of JsObject (seen in the producer)
+    val citizens = (json \ "citizens").as[List[JsObject]]
+
+    //Access each field of the citizens json array
+    citizens.flatMap { citizen =>
+      val score = (citizen \ "score").as[Int]
+      if (score < 5) {
+        val name = (citizen \ "name").as[String]
+        val surname = (citizen \ "surname").as[String]
+        Some(s"Name: $name, Surname: $surname, Score: $score")
+      } else {
+        None
+      }
+    }
+  }
+
   while (true) {
     //Attention! the k,v types of the consumer record must respectively be the same as in the class configurations
     //of the serializer and deserializers.
@@ -49,21 +66,5 @@ object Alerts extends App {
     }
   }
 
-  def findAgitatedCitizens(json: JsValue): List[String] = {
-    //Citizens field of the report is a List of JsObject (seen in the producer)
-    val citizens = (json \ "citizens").as[List[JsObject]]
-
-    //Access each field of the citizens json array
-    citizens.flatMap { citizen =>
-      val score = (citizen \ "score").as[Int]
-      if (score < 5) {
-        val name = (citizen \ "name").as[String]
-        val surname = (citizen \ "surname").as[String]
-        Some(s"Name: $name, Surname: $surname, Score: $score")
-      } else {
-        None
-      }
-    }
-  }
   consumer.close()
 }

@@ -14,6 +14,7 @@ object Analytics extends App {
 
   import spark.implicits._
 
+  //Create a data schema for the reports that we will be reading from the storage
   val reportSchema = new StructType()
     .add("timestamp", StringType)
     .add("droneId", IntegerType)
@@ -30,13 +31,13 @@ object Analytics extends App {
     .schema(reportSchema)
     .json("/Users/silaharmantepe/Documents/GitHub/DataEngineering/Storage/src/resources/localStorage/dataFiles")
 
-  dfReports.printSchema()
-  println(dfReports)
-  dfReports.show()
+  //dfReports.printSchema()
+  //println(dfReports)
+  //dfReports.show()
 
-  //Explode the citizen field in order to access its subfields : name, surname, score
+  //Explode the citizen field in order to access its subfields : name, surname, score, words
   val explodedCitizensDF = dfReports.select(explode(col("citizens")).as("citizen"))
-  (explodedCitizensDF.select(col("citizen"))).show()
+  //(explodedCitizensDF.select(col("citizen"))).show()
 
   //10 most peaceful citizens (mean of score)
   println("10 most peaceful citizens")
@@ -49,6 +50,7 @@ object Analytics extends App {
   peacefulCitizens.show()
 
   //Top 10 most heard words
+  println("Top 10 most heard words")
   val explodedWordsDF = explodedCitizensDF.select(split(col("citizen.words"), ",").as("wordsExp"))
   val mostHeardWords = explodedWordsDF.select(explode(col("wordsExp")).as("words"))
     .groupBy(col("words"))

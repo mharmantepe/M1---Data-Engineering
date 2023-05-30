@@ -25,7 +25,7 @@ object Storage extends App {
     .format("kafka")
     .option("kafka.bootstrap.servers", "localhost:9092")
     .option("group.id", "storage")
-    .option("subscribe", "reports, alerts") //Topics to subscribe to.
+    .option("subscribe", "reports") //Topic(s) to subscribe to.
     .load()
 
   initDf.printSchema()
@@ -45,11 +45,9 @@ object Storage extends App {
   println(schema)
 
 
-  //First we filter the topic field of the initial dataframe to only get the reports
   //Since the value is in binary, we need to convert the binary value to String using selectExpr()
   //Then extract the value which is in JSON String to DataFrame and convert to DataFrame columns using custom schema.
-  val parsedDfReports = initDf.filter($"topic" === "reports")
-    .selectExpr("CAST(value AS STRING) as value")
+  val parsedDfReports = initDf.selectExpr("CAST(value AS STRING) as value")
     .select(from_json($"value", schema).as("report"))
     .select("report.*")
   parsedDfReports.printSchema()
@@ -81,7 +79,6 @@ object Storage extends App {
     .outputMode("append")
     .trigger(Trigger.ProcessingTime(10000))
     .start()
-
     //finalDFAlerts.awaitTermination()
 */
 

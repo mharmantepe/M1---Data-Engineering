@@ -27,7 +27,7 @@ object Main extends App {
     val timestamp = new Date()
 
     // Generate a random count between 1 and 10
-    val randomNbCitizen = Random.nextInt(10) + 1
+    val randomNbCitizen = 1 + Random.nextInt(10)
     //Create a list of random citizens
     val citizens = List.fill(randomNbCitizen)(client.models.Citizens.generateCitizen())
     //println(citizens)
@@ -44,11 +44,13 @@ object Main extends App {
       "droneId" -> drone.droneId,
       "latitude" -> drone.latitude,
       "longitude" -> drone.longitude,
+      //Convert the json object to json into json format with .toJson() to allow transformation or manipulation of the data
       "citizens" -> Json.toJson(citizens.map { citizen =>
         Json.obj(
           "name" -> citizen.name,
           "surname" -> citizen.surname,
           "score" -> citizen.score,
+          //Concatenate each word of the list into a single string with .mkString(",")
           "words" -> Json.toJson(randWords.mkString(","))
         )
       }),
@@ -64,7 +66,8 @@ object Main extends App {
     println(data)
     val report = new ProducerRecord[String, String](topic, drone.droneId.toString, data.toString)
     producer.send(report)
-    Thread.sleep(60000) // sleep for 1 minute
+    //Pause for 60000 milisecs (=1 min) to control the timing between different threads.
+    Thread.sleep(60000)
   }
   producer.close()
 }
